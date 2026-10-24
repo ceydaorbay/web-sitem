@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#05040f">
+<title>Ceyda | Backend Developer Öğrencisi</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>
+tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{head:['"Chakra Petch"','sans-serif'],mono:['"JetBrains Mono"','monospace']},colors:{neon:{c:'#00f0ff',m:'#ff2bd6',v:'#8b5cf6'}}}}}
+</script>
+<style>
+:root{--c:#00f0ff;--m:#ff2bd6;--v:#8b5cf6;--bg:#05040f}
+html{scroll-padding-top:90px}
+body{background:var(--bg);color:#e8e6f5;font-family:'Chakra Petch',sans-serif;overflow-x:hidden}
+body::selection{background:var(--m);color:#fff}
+:focus-visible{outline:2px solid var(--c);outline-offset:3px;border-radius:6px}
+::-webkit-scrollbar{width:8px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:linear-gradient(var(--c),var(--m));border-radius:4px}
+
+/* background */
+#fx{position:fixed;inset:0;z-index:-3;pointer-events:none}
+.blobs{position:fixed;inset:0;z-index:-4;overflow:hidden;pointer-events:none}
+.blobs i{position:absolute;border-radius:50%;filter:blur(90px);opacity:.38;will-change:transform;animation:flow 22s ease-in-out infinite alternate}
+.blobs i:nth-child(1){width:55vmax;height:55vmax;background:var(--v);top:-20vmax;left:-15vmax}
+.blobs i:nth-child(2){width:45vmax;height:45vmax;background:var(--m);bottom:-18vmax;right:-12vmax;animation-duration:27s;animation-delay:-8s;opacity:.28}
+.blobs i:nth-child(3){width:38vmax;height:38vmax;background:var(--c);top:35%;left:40%;animation-duration:31s;animation-delay:-14s;opacity:.18}
+@keyframes flow{0%{transform:translate(0,0) scale(1)}50%{transform:translate(12vmax,-6vmax) scale(1.2) rotate(40deg)}100%{transform:translate(-8vmax,10vmax) scale(.9) rotate(-30deg)}}
+.grid-bg{position:fixed;inset:0;z-index:-2;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:56px 56px;mask-image:radial-gradient(ellipse at 50% 30%,#000 20%,transparent 75%);-webkit-mask-image:radial-gradient(ellipse at 50% 30%,#000 20%,transparent 75%)}
+
+/* glass */
+.glass{background:rgba(255,255,255,.045);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.1)}
+.neon-t{background:linear-gradient(90deg,var(--c),var(--v) 50%,var(--m));-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* nav */
+#bar{position:fixed;top:calc(env(safe-area-inset-top,0px) + 14px);left:50%;transform:translateX(-50%);width:min(940px,calc(100% - 24px));z-index:50;border-radius:18px;transition:box-shadow .3s}
+#bar.s{box-shadow:0 0 0 1px rgba(0,240,255,.25),0 10px 40px rgba(0,0,0,.5)}
+#prog{position:absolute;left:14px;right:14px;bottom:0;height:2px;background:linear-gradient(90deg,var(--c),var(--m));transform-origin:left;transform:scaleX(0)}
+.nl{position:relative;padding:8px 14px;font-size:14px;color:#a9a6c9;transition:color .2s}
+.nl::after{content:"";position:absolute;left:14px;right:14px;bottom:2px;height:2px;background:var(--c);box-shadow:0 0 10px var(--c);transform:scaleX(0);transition:transform .3s}
+.nl:hover,.nl.on{color:#fff}.nl.on::after,.nl:hover::after{transform:scaleX(1)}
+
+/* hero */
+.glitch{position:relative;display:inline-block;font-weight:700;letter-spacing:-.03em;line-height:.95}
+.glitch::before,.glitch::after{content:attr(data-t);position:absolute;inset:0;opacity:0}
+.glitch::before{color:var(--c);clip-path:inset(0 0 55% 0)}
+.glitch::after{color:var(--m);clip-path:inset(55% 0 0 0)}
+.glitch:hover::before,.glitch.g::before{opacity:.9;animation:gl1 .4s steps(2) 2}
+.glitch:hover::after,.glitch.g::after{opacity:.9;animation:gl2 .4s steps(2) 2}
+@keyframes gl1{25%{transform:translate(-5px,2px)}75%{transform:translate(4px,-2px)}}
+@keyframes gl2{25%{transform:translate(5px,-2px)}75%{transform:translate(-4px,2px)}}
+.cursor{display:inline-block;width:.6ch;height:1.1em;background:var(--c);vertical-align:-.15em;margin-left:3px;box-shadow:0 0 12px var(--c);animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+#stage{perspective:1100px}
+#tilt{transform-style:preserve-3d;transition:transform .15s ease-out;will-change:transform}
+#tilt.rest{transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+.z1{transform:translateZ(34px)}.z2{transform:translateZ(70px)}
+.term{border-radius:20px;box-shadow:0 0 0 1px rgba(0,240,255,.25),0 30px 80px -20px rgba(139,92,246,.55),0 0 60px -10px rgba(255,43,214,.3)}
+.chipf{position:absolute;padding:6px 12px;border-radius:10px;font-family:'JetBrains Mono',monospace;font-size:12px;animation:bobc 5s ease-in-out infinite}
+@keyframes bobc{50%{margin-top:-10px}}
+.btn{position:relative;display:inline-flex;align-items:center;gap:10px;padding:14px 26px;border-radius:14px;font-weight:600;transition:transform .2s,box-shadow .3s;overflow:hidden}
+.btn.p{background:linear-gradient(120deg,var(--c),var(--v) 55%,var(--m));color:#05040f;box-shadow:0 0 28px -4px rgba(0,240,255,.55)}
+.btn.p:hover{box-shadow:0 0 44px 0 rgba(255,43,214,.6);transform:translateY(-3px)}
+.btn.p::after{content:"";position:absolute;top:0;left:-70%;width:50%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-20deg);transition:left .6s}
+.btn.p:hover::after{left:130%}
+.btn.o{border:1px solid rgba(0,240,255,.45);color:var(--c)}
+.btn.o:hover{background:rgba(0,240,255,.1);box-shadow:0 0 28px -4px rgba(0,240,255,.5);transform:translateY(-3px)}
+
+/* sections */
+.rv{opacity:0;transform:translateY(34px);filter:blur(6px);transition:opacity .8s,transform .8s cubic-bezier(.2,.8,.2,1),filter .8s;transition-delay:var(--d,0s)}
+.rv.in{opacity:1;transform:none;filter:none}
+.sec-t{font-weight:700;font-size:clamp(30px,5vw,52px);letter-spacing:-.02em}
+.sec-t span{font-family:'JetBrains Mono',monospace;font-weight:400;font-size:.4em;color:var(--c);display:block;margin-bottom:8px}
+
+/* spotlight cards */
+.spot{position:relative;border-radius:22px;overflow:hidden;transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s}
+.spot::before{content:"";position:absolute;inset:0;opacity:0;transition:opacity .35s;background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),rgba(0,240,255,.16),rgba(255,43,214,.08) 45%,transparent 70%);pointer-events:none}
+.spot::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:radial-gradient(260px circle at var(--mx,50%) var(--my,50%),var(--c),var(--m) 50%,transparent 80%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .35s;pointer-events:none}
+.spot:hover{transform:translateY(-8px);box-shadow:0 30px 70px -25px rgba(139,92,246,.6)}
+.spot:hover::before,.spot:hover::after{opacity:1}
+.ico{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;font-size:22px;transition:transform .4s cubic-bezier(.3,1.6,.5,1),box-shadow .3s}
+.spot:hover .ico{transform:translateY(-5px) rotate(-8deg) scale(1.1);box-shadow:0 0 28px currentColor}
+.tag{font-family:'JetBrains Mono',monospace;font-size:12px;padding:4px 10px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);transition:.25s}
+.spot:hover .tag{border-color:rgba(0,240,255,.35);color:var(--c)}
+.lnk i{transition:transform .3s}.lnk:hover i{transform:translateX(6px)}
+
+/* micro icons */
+.eq{display:flex;gap:4px;align-items:flex-end;height:26px}
+.eq b{width:5px;border-radius:3px;background:linear-gradient(var(--m),var(--c));height:30%;animation:eq 1s ease-in-out infinite}
+.eq b:nth-child(2){animation-delay:-.3s}.eq b:nth-child(3){animation-delay:-.6s}.eq b:nth-child(4){animation-delay:-.15s}
+.spot:not(:hover) .eq b{animation-play-state:paused}
+@keyframes eq{50%{height:100%}}
+.orb{position:relative}.orb::before,.orb::after{content:"";position:absolute;inset:-8px;border-radius:50%;border:1px solid currentColor;opacity:0}
+.spot:hover .orb::before{animation:ring 1.6s ease-out infinite}.spot:hover .orb::after{animation:ring 1.6s ease-out .5s infinite}
+@keyframes ring{from{transform:scale(.7);opacity:.7}to{transform:scale(1.7);opacity:0}}
+.fly{animation:none}.spot:hover .fly{animation:fly 1.6s ease-in-out infinite}
+@keyframes fly{0%{transform:translate(-8px,6px) rotate(0)}50%{transform:translate(10px,-8px) rotate(8deg)}100%{transform:translate(-8px,6px) rotate(0)}}
+
+.swim{display:inline-block}.spot:hover .swim{animation:swim 1.2s ease-in-out infinite}
+@keyframes swim{0%,100%{transform:translateX(-5px) rotate(-6deg)}50%{transform:translateX(6px) rotate(6deg) translateY(-3px)}}
+.spot:hover .tp{animation:blink .7s steps(2) infinite}
+/* form */
+.in-f{width:100%;padding:14px 16px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);color:#fff;font:inherit;transition:.25s}
+.in-f::placeholder{color:#6f6c93}
+.in-f:focus{outline:none;border-color:var(--c);box-shadow:0 0 0 4px rgba(0,240,255,.12),0 0 24px -6px var(--c)}
+#toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 24px);transform:translate(-50%,160%);transition:transform .5s cubic-bezier(.2,1.4,.4,1);z-index:60}
+#toast.on{transform:translate(-50%,0)}
+@media(max-width:768px){.chipf{display:none}.z1,.z2{transform:none}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.rv{opacity:1;transform:none;filter:none}.blobs i{animation:none!important}}
+</style>
+</head>
+<body style="padding-bottom:env(safe-area-inset-bottom,0px)">
+<div class="blobs" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="grid-bg" aria-hidden="true"></div>
+<canvas id="fx" aria-hidden="true"></canvas>
+
+<!-- NAV -->
+<header id="bar" class="glass">
+  <div class="flex items-center justify-between h-14 px-4">
+    <a href="#top" class="font-head font-bold text-lg tracking-wide"><span class="text-neon-c">&lt;</span>Ceyda<span class="text-neon-m">/&gt;</span></a>
+    <nav class="hidden md:flex items-center" aria-label="Ana menü">
+      <a class="nl" href="#about">Hakkımda</a><a class="nl" href="#skills">Yeteneklerim</a><a class="nl" href="#projects">Projelerim</a><a class="nl" href="#hobbies">Hobilerim</a><a class="nl" href="#contact">İletişim</a>
+    </nav>
+    <div class="flex items-center gap-2">
+      <a href="https://github.com/ceydaorbay" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="w-10 h-10 grid place-items-center rounded-xl hover:bg-white/10 transition"><i class="fab fa-github text-lg"></i></a>
+      <button id="burger" class="md:hidden w-10 h-10 grid place-items-center rounded-xl hover:bg-white/10" aria-label="Menüyü aç" aria-expanded="false"><i class="fas fa-bars"></i></button>
+    </div>
+  </div>
+  <nav id="mnav" class="hidden md:hidden px-4 pb-3 grid gap-1" aria-label="Mobil menü">
+    <a class="nl" href="#about">Hakkımda</a><a class="nl" href="#skills">Yeteneklerim</a><a class="nl" href="#projects">Projelerim</a><a class="nl" href="#hobbies">Hobilerim</a><a class="nl" href="#contact">İletişim</a>
+  </nav>
+  <div id="prog"></div>
+</header>
+
+<main id="top">
+<!-- HERO -->
+<section class="min-h-screen flex items-center px-5 pt-28 pb-16">
+  <div class="max-w-6xl mx-auto w-full grid lg:grid-cols-2 gap-14 items-center">
+    <div>
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass text-sm text-neon-c font-mono mb-7"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>Sürekli Öğrenmeye ve Gelişmeye Açık</div>
+      <p class="font-mono text-gray-400 mb-3">Merhaba, Ben</p>
+      <h1 class="font-head"><span class="glitch text-7xl sm:text-8xl lg:text-9xl neon-t" data-t="Ceyda" id="gl">Ceyda</span></h1>
+      <p class="mt-6 text-xl sm:text-2xl font-medium min-h-[2.2em] sm:min-h-[1.6em]"><span class="text-neon-m font-mono">&gt;</span> <span id="tw"></span><span class="cursor"></span></p>
+      <p class="mt-4 text-gray-400 max-w-lg leading-relaxed">Güvenilir, performanslı ve sürdürülebilir arka plan sistemleri inşa etmeye odaklanan bir yazılım geliştirici adayıyım. Modern veri mimarileri ve yapay zeka entegrasyonlarıyla kendimi sürekli geliştiriyorum.</p>
+      <div class="mt-9 flex flex-wrap gap-4">
+        <a href="#projects" class="btn p"><i class="fas fa-code"></i>Projelerim</a>
+        <a href="#contact" class="btn o"><i class="far fa-paper-plane"></i>İletişime Geç</a>
+      </div>
+    </div>
+
+    <div id="stage" class="relative hidden sm:block">
+      <div id="tilt" class="relative">
+        <div class="term glass overflow-hidden">
+          <div class="flex items-center gap-2 px-5 py-3 border-b border-white/10 z1">
+            <i class="w-3 h-3 rounded-full bg-neon-m"></i><i class="w-3 h-3 rounded-full bg-yellow-300"></i><i class="w-3 h-3 rounded-full bg-neon-c"></i>
+            <span class="ml-3 font-mono text-xs text-gray-400">GET /api/ceyda — 200 OK</span>
+          </div>
+          <pre class="font-mono text-[13px] sm:text-sm leading-7 p-6 z1 overflow-hidden"><code><span class="text-gray-500">{</span>
+  <span class="text-neon-c">"ad"</span>: <span class="text-emerald-300">"Ceyda"</span>,
+  <span class="text-neon-c">"rol"</span>: <span class="text-emerald-300">"Backend Developer Öğrencisi"</span>,
+  <span class="text-neon-c">"stack"</span>: [<span class="text-neon-m">"C#"</span>, <span class="text-neon-m">"ASP.NET Core"</span>,
+            <span class="text-neon-m">"EF Core"</span>, <span class="text-neon-m">"SQL"</span>,
+            <span class="text-neon-m">"Python"</span>, <span class="text-neon-m">"Docker"</span>],
+  <span class="text-neon-c">"mezun"</span>: <span class="text-emerald-300">"Yapay Zeka ve ML"</span>,
+  <span class="text-neon-c">"durum"</span>: <span class="text-emerald-300">"sürekli öğreniyor"</span>
+<span class="text-gray-500">}</span></code></pre>
+        </div>
+        <span class="chipf glass z2 text-neon-c" style="top:-22px;right:12%">C#</span>
+        <span class="chipf glass z2 text-neon-m" style="bottom:14%;left:-26px;animation-delay:-1.5s">Docker</span>
+        <span class="chipf glass z2 text-neon-v" style="bottom:-20px;right:10%;animation-delay:-3s;color:#b69cff">JWT</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="px-5 py-24">
+  <div class="max-w-6xl mx-auto">
+    <div class="rv"><h2 class="sec-t"><span>// about</span><em class="neon-t" style="font-style:normal">Hakkımda</em></h2></div>
+    <div class="grid md:grid-cols-2 gap-6 mt-10">
+      <div class="spot glass p-8 rv"><div class="ico bg-neon-c/10 text-neon-c mb-5"><i class="fas fa-graduation-cap"></i></div><h3 class="font-bold text-xl mb-3">Eğitim &amp; Backend Serüvenim</h3><p class="text-gray-300 leading-relaxed">Yazılım geliştirme alanında <b class="text-neon-c">Backend Software Development</b> odaklı eğitim almaktayım. Nesne yönelimli programlama, güvenli API tasarımı, veritabanı yönetimi ve sunucu taraflı mimariler inşa etme üzerine kendimi sürekli geliştiriyorum.</p></div>
+      <div class="spot glass p-8 rv" style="--d:.12s"><div class="ico orb bg-neon-m/10 text-neon-m mb-5"><i class="fas fa-brain"></i></div><h3 class="font-bold text-xl mb-3">Veri Analizi &amp; Yapay Zeka</h3><p class="text-gray-300 leading-relaxed"><b class="text-neon-m">Veri Analizi Okulu</b> bünyesinde sunulan <b class="text-neon-m">Yapay Zeka ve Makine Öğrenmesi</b> eğitimini başarıyla tamamlayıp mezun oldum. Yapay zeka teknolojileri ve akıllı veri çözümleri en büyük ilgi alanlarım arasında yer almaktadır.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills" class="px-5 py-24">
+  <div class="max-w-6xl mx-auto">
+    <div class="rv"><h2 class="sec-t"><span>// skills</span><em class="neon-t" style="font-style:normal">Yeteneklerim</em></h2><p class="text-gray-400 mt-3 max-w-xl">Geliştirdiğim projelerde aktif olarak kullandığım teknik beceriler</p></div>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 mt-10">
+      <div class="spot glass p-5 flex flex-col items-center gap-3 rv"><div class="ico bg-purple-500/10 text-purple-400"><i class="fas fa-code"></i></div><span class="font-semibold text-sm text-center">C#</span></div>
+      <div class="spot glass p-5 flex flex-col items-center gap-3 rv" style="--d:.05s"><div class="ico bg-indigo-500/10 text-indigo-400"><i class="fas fa-cubes"></i></div><span class="font-semibold text-sm text-center">ASP.NET Core</span></div>
+      <div class="spot glass p-5 flex flex-col items-center gap-3 rv" style="--d:.1s"><div class="ico bg-violet-500/10 text-violet-400"><i class="fas fa-layer-group"></i></div><span class="font-semibold text-sm text-center">Entity Framework</span></div>
+      <div class="spot glass p-5 flex flex-col items-center gap-3 rv" style="--d:.15s"><div class="ico bg-emerald-500/10 text-emerald-400"><i class="fas fa-database"></i></div><span class="font-semibold text-sm text-center">SQL (MySQL, MSSQL)</span></div>
+      <div class="spot glass p-5 flex flex-col items-center gap-3 rv" style="--d:.2s"><div class="ico bg-blue-500/10 text-blue-400"><i class="fab fa-python"></i></div><span class="font-semibold text-sm text-center">Python</span></div>
+      <div class="spot glass p-5 flex flex-col items-center gap-3 rv"><div class="ico bg-sky-500/10 text-sky-400"><i class="fab fa-docker"></i></div><span class="font-semibold text-sm text-center">Docker</span></div>
+      <div class="spot glass p-5 flex flex-col items-center gap-3 rv" style="--d:.05s"><div class="ico bg-red-500/10 text-red-400"><i class="fab fa-git-alt"></i></div><span class="font-semibold text-sm text-center">Git / GitHub</span></div>
+      <div class="spot glass p-5 flex flex-col items-center gap-3 rv" style="--d:.1s"><div class="ico bg-yellow-500/10 text-yellow-400"><i class="fab fa-js-square"></i></div><span class="font-semibold text-sm text-center">JavaScript</span></div>
+      <div class="spot glass p-5 flex flex-col items-center gap-3 rv" style="--d:.15s"><div class="ico bg-orange-500/10 text-orange-400"><i class="fab fa-html5"></i></div><span class="font-semibold text-sm text-center">HTML</span></div>
+      <div class="spot glass p-5 flex flex-col items-center gap-3 rv" style="--d:.2s"><div class="ico bg-blue-500/10 text-blue-500"><i class="fab fa-css3-alt"></i></div><span class="font-semibold text-sm text-center">CSS</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects" class="px-5 py-24">
+  <div class="max-w-6xl mx-auto">
+    <div class="rv"><h2 class="sec-t"><span>// projects</span><em class="neon-t" style="font-style:normal">Projelerim</em></h2><p class="text-gray-400 mt-3 max-w-xl">Geliştirdiğim ve mimarisini kurguladığım çalışmalar</p></div>
+    <div class="grid md:grid-cols-2 gap-6 mt-10">
+      <article class="spot glass p-7 flex flex-col rv">
+        <div class="flex justify-between items-start mb-6"><div class="ico bg-neon-c/10 text-neon-c"><i class="fas fa-server"></i></div><i class="fab fa-github text-xl text-gray-500"></i></div>
+        <span class="tag self-start mb-4">Backend Architecture</span>
+        <h3 class="text-xl font-bold mb-3">Multi-Tenant B2B SaaS Platformu</h3>
+        <p class="text-gray-400 text-sm leading-relaxed mb-6">C# ve .NET 10 mimarisi kullanılarak geliştirilmiş, veritabanı seviyesinde izolasyon sağlayan güvenli ve ölçeklenebilir B2B SaaS arka plan mimarisi. JWT doğrulama ve BCrypt şifreleme altyapısına sahiptir.</p>
+        <div class="flex flex-wrap gap-2 mb-6"><span class="tag">.NET 10</span><span class="tag">EF Core</span><span class="tag">MSSQL</span><span class="tag">JWT</span></div>
+        <a href="https://github.com/ceydaorbay" target="_blank" rel="noopener noreferrer" class="lnk mt-auto text-neon-c font-semibold text-sm">GitHub’da İncele <i class="fas fa-arrow-right ml-1 text-xs"></i></a>
+      </article>
+      <article class="spot glass p-7 flex flex-col rv" style="--d:.12s">
+        <div class="flex justify-between items-start mb-6"><div class="ico bg-neon-m/10 text-neon-m"><i class="fas fa-list-check"></i></div><i class="fab fa-github text-xl text-gray-500"></i></div>
+        <span class="tag self-start mb-4">Task Management</span>
+        <h3 class="text-xl font-bold mb-3">Planner (Görev &amp; Planlama Uygulaması)</h3>
+        <p class="text-gray-400 text-sm leading-relaxed mb-6">Kullanıcıların günlük görevlerini, projelerini ve yapılacaklar listesini verimli bir şekilde organize etmelerini sağlayan, veritabanı bağlantılı modern planlama uygulaması.</p>
+        <div class="flex flex-wrap gap-2 mb-6"><span class="tag">C#</span><span class="tag">ASP.NET Core</span><span class="tag">SQL</span></div>
+        <a href="https://github.com/ceydaorbay" target="_blank" rel="noopener noreferrer" class="lnk mt-auto text-neon-m font-semibold text-sm">GitHub’da İncele <i class="fas fa-arrow-right ml-1 text-xs"></i></a>
+      </article>
+    </div>
+    <div class="mt-12 text-center rv"><a href="https://github.com/ceydaorbay" target="_blank" rel="noopener noreferrer" class="btn o"><i class="fab fa-github text-lg"></i>Tüm Projelerimi GitHub’da İnceleyin</a></div>
+  </div>
+</section>
+
+<!-- HOBBIES -->
+<section id="hobbies" class="px-5 py-24">
+  <div class="max-w-6xl mx-auto">
+    <div class="rv"><h2 class="sec-t"><span>// hobbies</span><em class="neon-t" style="font-style:normal">Hobilerim &amp; İlgi Alanlarım</em></h2><p class="text-gray-400 mt-3 max-w-xl">Yazılım dışında vakit ayırmaktan ve takip etmekten keyif aldığım alanlar</p></div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-5 mt-10">
+      <div class="spot glass p-6 text-center rv"><div class="ico bg-blue-500/10 text-blue-400 mx-auto mb-5"><i class="fas fa-plane fly"></i></div><h3 class="font-bold mb-2">Yeni Ülkeler Gezmek &amp; Seyahat</h3><p class="text-gray-400 text-xs leading-relaxed">Yeni kültürler tanımak, farklı şehirleri keşfetmek ve seyahat etmek.</p></div>
+      <div class="spot glass p-6 text-center rv" style="--d:.08s"><div class="ico bg-purple-500/10 text-purple-400 mx-auto mb-5"><i class="fas fa-laptop-code tp"></i></div><h3 class="font-bold mb-2">Yazılım &amp; Kodlama</h3><p class="text-gray-400 text-xs leading-relaxed">Yeni teknolojileri araştırmak ve sürekli yeni algoritmalar denemek.</p></div>
+      <div class="spot glass p-6 text-center rv" style="--d:.16s"><div class="flex items-end justify-center gap-3 mb-5"><div class="ico bg-pink-500/10 text-pink-400"><i class="fas fa-headphones"></i></div><div class="eq" aria-hidden="true"><b></b><b></b><b></b><b></b></div></div><h3 class="font-bold mb-2">Müzik Dinlemek</h3><p class="text-gray-400 text-xs leading-relaxed">Günlük yaşamda ve odaklanma süreçlerinde farklı tarzda müzikler dinlemek.</p></div>
+      <div class="spot glass p-6 text-center rv" style="--d:.24s"><div class="ico bg-cyan-500/10 text-cyan-400 mx-auto mb-5"><i class="fas fa-swimmer swim"></i></div><h3 class="font-bold mb-2">Yüzmek</h3><p class="text-gray-400 text-xs leading-relaxed">Düzenli yüzmek ve su sporlarıyla zinde kalmak.</p></div>
+      <div class="spot glass p-6 text-center rv sm:col-span-2 lg:col-span-1" style="--d:.32s"><div class="ico orb bg-emerald-500/10 text-emerald-400 mx-auto mb-5"><i class="fas fa-brain"></i></div><h3 class="font-bold mb-2">Yapay Zeka</h3><p class="text-gray-400 text-xs leading-relaxed">Yapay zeka, makine öğrenmesi ve otonom sistemlerdeki gelişmeleri takip etmek.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="px-5 py-24">
+  <div class="max-w-6xl mx-auto">
+    <div class="rv"><h2 class="sec-t"><span>// contact</span><em class="neon-t" style="font-style:normal">İletişime Geçin</em></h2><p class="text-gray-400 mt-3 max-w-xl">Mesaj bırakmak veya iletişime geçmek için formu doldurabilirsiniz</p></div>
+    <div class="grid lg:grid-cols-5 gap-8 mt-10">
+      <div class="lg:col-span-2 glass rounded-3xl p-8 rv flex flex-col gap-7">
+        <div><h3 class="text-xl font-bold mb-2">İletişim Bilgilerim</h3><p class="text-gray-400 text-sm">Doğrudan e-posta veya GitHub hesabım üzerinden ulaşabilirsiniz.</p></div>
+        <div class="flex items-start gap-4"><span class="ico bg-neon-c/10 text-neon-c shrink-0"><i class="fas fa-envelope"></i></span><div><h4 class="text-sm font-semibold text-gray-400">E-Posta</h4><a href="mailto:ceydaorby85@icloud.com" class="break-all font-medium hover:text-neon-c transition">ceydaorby85@icloud.com</a></div></div>
+        <div class="flex items-start gap-4"><span class="ico bg-neon-m/10 text-neon-m shrink-0"><i class="fab fa-github"></i></span><div><h4 class="text-sm font-semibold text-gray-400">GitHub</h4><a href="https://github.com/ceydaorbay" target="_blank" rel="noopener noreferrer" class="font-medium hover:text-neon-m transition">github.com/ceydaorbay</a></div></div>
+      </div>
+      <form id="f" class="lg:col-span-3 glass rounded-3xl p-8 grid gap-5 rv" style="--d:.12s">
+        <div class="grid sm:grid-cols-2 gap-5">
+          <label class="grid gap-2 text-sm font-medium text-gray-300">Adınız Soyadınız<input id="n" class="in-f" required placeholder="Adınız Soyadınız"></label>
+          <label class="grid gap-2 text-sm font-medium text-gray-300">E-Posta Adresiniz<input id="e" type="email" class="in-f" required placeholder="E-posta Adresiniz"></label>
+        </div>
+        <label class="grid gap-2 text-sm font-medium text-gray-300">Konu<input id="s" class="in-f" required placeholder="Konu"></label>
+        <label class="grid gap-2 text-sm font-medium text-gray-300">Mesajınız<textarea id="m" rows="5" class="in-f resize-none" required placeholder="Mesajınız"></textarea></label>
+        <button class="btn p justify-center" type="submit"><i class="far fa-paper-plane"></i>Mesajı Gönder</button>
+      </form>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="border-t border-white/10 py-8 px-5 text-gray-500 text-sm">
+  <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3">
+    <p>© 2026 Ceyda. Tüm hakları saklıdır.</p>
+    <div class="flex gap-5 text-lg"><a href="https://github.com/ceydaorbay" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="hover:text-neon-c transition"><i class="fab fa-github"></i></a><a href="mailto:ceydaorby85@icloud.com" aria-label="E-posta" class="hover:text-neon-m transition"><i class="fas fa-envelope"></i></a></div>
+  </div>
+</footer>
+
+<div id="toast" class="glass rounded-2xl px-6 py-4 flex items-center gap-3 text-sm" role="status"><i class="fas fa-circle-check text-emerald-400"></i>E-posta uygulamanız açılıyor, mesajı orada göndermeniz yeterli.</div>
+
+<script>
+(function(){
+var $=function(s,c){return(c||document).querySelector(s)},$$=function(s,c){return[].slice.call((c||document).querySelectorAll(s))};
+var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+/* typewriter */
+var words=['Backend Developer Öğrencisi','Yazılım Geliştirici Adayı','Yapay Zeka & ML Mezunu'],wi=0,ci=0,del=false,tw=$('#tw');
+function type(){var w=words[wi];ci+=del?-1:1;tw.textContent=w.slice(0,ci);var t=del?35:70;
+ if(!del&&ci===w.length){del=true;t=1600}else if(del&&ci===0){del=false;wi=(wi+1)%words.length;t=350}setTimeout(type,t)}
+if(reduce)tw.textContent=words[0];else type();
+
+/* glitch pulse */
+var gl=$('#gl');if(!reduce)setInterval(function(){gl.classList.add('g');setTimeout(function(){gl.classList.remove('g')},850)},5200);
+
+/* 3D tilt */
+var stage=$('#stage'),tilt=$('#tilt');
+if(matchMedia('(pointer:fine)').matches&&!reduce){
+ stage.addEventListener('pointermove',function(e){var r=stage.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;tilt.classList.remove('rest');tilt.style.transform='rotateY('+(x*20)+'deg) rotateX('+(-y*20)+'deg)'});
+ stage.addEventListener('pointerleave',function(){tilt.classList.add('rest');tilt.style.transform='rotateY(-6deg) rotateX(3deg)'});
+ tilt.style.transform='rotateY(-6deg) rotateX(3deg)';
+}
+
+/* spotlight */
+$$('.spot').forEach(function(el){el.addEventListener('pointermove',function(e){var r=el.getBoundingClientRect();el.style.setProperty('--mx',(e.clientX-r.left)+'px');el.style.setProperty('--my',(e.clientY-r.top)+'px')})});
+
+/* scroll reveal + active nav */
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});
+$$('.rv').forEach(function(el){io.observe(el)});
+var links=$$('#bar .nl'),secs=['about','skills','projects','hobbies','contact'].map(function(i){return document.getElementById(i)});
+var so=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){links.forEach(function(l){l.classList.toggle('on',l.getAttribute('href')==='#'+e.target.id)})}})},{rootMargin:'-45% 0px -50% 0px'});
+secs.forEach(function(s){so.observe(s)});
+
+/* nav bar */
+var bar=$('#bar'),prog=$('#prog');
+function onScroll(){var h=document.documentElement,p=h.scrollTop/(h.scrollHeight-h.clientHeight||1);prog.style.transform='scaleX('+p+')';bar.classList.toggle('s',h.scrollTop>20)}
+addEventListener('scroll',onScroll,{passive:true});onScroll();
+var bg=$('#burger'),mn=$('#mnav');
+bg.addEventListener('click',function(){var o=mn.classList.toggle('hidden');bg.setAttribute('aria-expanded',String(!o))});
+$$('a',mn).forEach(function(a){a.addEventListener('click',function(){mn.classList.add('hidden');bg.setAttribute('aria-expanded','false')})});
+
+/* form */
+var toast=$('#toast');
+$('#f').addEventListener('submit',function(ev){ev.preventDefault();
+ var g=function(i){return $('#'+i).value};
+ var body='Ad: '+g('n')+'\nE-posta: '+g('e')+'\n\n'+g('m');
+ toast.classList.add('on');setTimeout(function(){toast.classList.remove('on')},5000);
+ location.href='mailto:ceydaorby85@icloud.com?subject='+encodeURIComponent(g('s'))+'&body='+encodeURIComponent(body);
+ ev.target.reset()});
+
+/* particle network */
+var cv=$('#fx'),cx=cv.getContext('2d'),W,H,dpr=Math.min(devicePixelRatio||1,1.5),P=[],mx=-999,my=-999,run=true;
+function size(){W=innerWidth;H=innerHeight;cv.width=W*dpr;cv.height=H*dpr;cv.style.width=W+'px';cv.style.height=H+'px';cx.setTransform(dpr,0,0,dpr,0,0);
+ var n=Math.min(90,Math.floor(W*H/17000));P=[];for(var i=0;i<n;i++)P.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,c:Math.random()<.5?'0,240,255':'255,43,214'})}
+size();addEventListener('resize',size);
+addEventListener('pointermove',function(e){mx=e.clientX;my=e.clientY},{passive:true});
+document.addEventListener('visibilitychange',function(){run=!document.hidden;if(run)frame()});
+function frame(){if(!run)return;cx.clearRect(0,0,W,H);
+ for(var i=0;i<P.length;i++){var a=P[i];a.x+=a.vx;a.y+=a.vy;if(a.x<0||a.x>W)a.vx*=-1;if(a.y<0||a.y>H)a.vy*=-1;
+  var dx=a.x-mx,dy=a.y-my,d=dx*dx+dy*dy;if(d<14000){var f=(1-d/14000)*.6;a.x+=dx*f*.05;a.y+=dy*f*.05}
+  cx.fillStyle='rgba('+a.c+',.85)';cx.beginPath();cx.arc(a.x,a.y,1.6,0,6.283);cx.fill();
+  for(var j=i+1;j<P.length;j++){var b=P[j],ex=a.x-b.x,ey=a.y-b.y,dd=ex*ex+ey*ey;if(dd<15000){cx.strokeStyle='rgba('+a.c+','+(.16*(1-dd/15000))+')';cx.lineWidth=1;cx.beginPath();cx.moveTo(a.x,a.y);cx.lineTo(b.x,b.y);cx.stroke()}}}
+ if(!reduce)requestAnimationFrame(frame)}
+frame();
+})();
+</script>
+</body>
+</html>
